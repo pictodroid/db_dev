@@ -15,6 +15,13 @@ if (isset($_POST['username']) && isset($_POST['filename']) ) {
     $filename = $_POST['filename'];
 	$datecreated = $_POST['datecreated'];
 	$locationcreated = $_POST['locationcreated'];
+    $tmpName  = $_FILES['filecontent']['tmp_name'];
+    $fp      = fopen($tmpName, 'r');
+    $content = fread($fp, filesize($tmpName));
+    $content = addslashes($content);
+    fclose($fp);
+
+    $imagedata = $_FILES['filecontent'];
 	  
     // include db connect class
     require_once __DIR__ . '/db_connect.php';
@@ -23,7 +30,7 @@ if (isset($_POST['username']) && isset($_POST['filename']) ) {
     $db = new DB_CONNECT();
  
     // mysql inserting a new row
-    $result = mysql_query("INSERT INTO picto(username, filename, datecreated, locationcreated) VALUES('$username', '$filename', '$datecreated', '$locationcreated')");
+    $result = mysql_query("INSERT INTO picto(username, filename, datecreated, locationcreated,imageobj) VALUES('$username', '$filename', '$datecreated', '$locationcreated','$content')");
  
     // check if row inserted or not
     if ($result) {
