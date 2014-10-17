@@ -12,10 +12,10 @@ class DB_CONNECT {
     }
  
     // destructor
-    function __destruct() {
+    //function __destruct() {
         // closing db connection
-        $this->close();
-    }
+        //$this->close();
+    //}
  
     /**
      * Function to connect with database
@@ -37,10 +37,10 @@ class DB_CONNECT {
     /**
      * Function to close db connection
      */
-    function close() {
+   //function close() {
         // closing db connection
-        mysql_close();
-    }
+        //mysql_close();
+    //}
  
 }
  
