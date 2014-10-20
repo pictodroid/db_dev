@@ -20,7 +20,25 @@ $mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
 //Replace the plain text body with one created manually
 $mail->AltBody = 'This is a plain-text message body';
 //Attach an image file
-$mail->addAttachment('images/phpmailer_mini.png');*/
+		$mail->addAttachment('images/phpmailer_mini.png');*/
+		/* for gmail */ 
+		//$mail->setFrom('pictolike@gmail.com', 'PictoLike Team'); /*[2:52:38] Pourzand: Password51*/ //Set who the message is to be sent from
+		//$mail->addReplyTo('replyto@example.com', 'First Last');						//Set an alternative reply-to address
+		//$mail->addAddress('hpourzand@gmail.com', 'PictoLike User');	//hpourzand@gmail.com 	//Set who the message is to be sent to
+		//$mail->addAddress('hoofar@pictolike.com', 'PictoLike User');
+		//$mail->Subject = 'user authentication';											//Set the subject line
+		//Read an HTML message body from an external file, convert referenced images to embedded,
+		//convert HTML into a basic plain-text alternative body
+		//$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+		//$mail->msgHTML('SECRET_CODE_NEW');
+		//$mail->AltBody = '';															//Replace the plain text body with one created manually
+		//$mail->addAttachment('images/phpmailer_mini.png');							//Attach an image file
+		/*send the message, check for errorss
+		if (!$mail->send()) {
+		    echo "Mailer Error: " . $mail->ErrorInfo;
+		} else {
+		    echo "Message sent!";
+		}*/
 
 //var_dump($_REQUEST);
 // Get POST parameters
@@ -72,45 +90,51 @@ if(isset($_REQUEST)){
 			echo json_encode($send_arr);
 		}
 		break;																	// End section primary user authentication
-		/* for gmail */ 
-		//$mail->setFrom('pictolike@gmail.com', 'PictoLike Team'); /*[2:52:38] Pourzand: Password51*/ //Set who the message is to be sent from
-		//$mail->addReplyTo('replyto@example.com', 'First Last');						//Set an alternative reply-to address
-		//$mail->addAddress('hpourzand@gmail.com', 'PictoLike User');	//hpourzand@gmail.com 	//Set who the message is to be sent to
-		//$mail->addAddress('hoofar@pictolike.com', 'PictoLike User');
-		//$mail->Subject = 'user authentication';											//Set the subject line
-		//Read an HTML message body from an external file, convert referenced images to embedded,
-		//convert HTML into a basic plain-text alternative body
-		//$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
-		//$mail->msgHTML('SECRET_CODE_NEW');
-		//$mail->AltBody = '';															//Replace the plain text body with one created manually
-		//$mail->addAttachment('images/phpmailer_mini.png');							//Attach an image file
-		/*send the message, check for errorss
-		if (!$mail->send()) {
-		    echo "Mailer Error: " . $mail->ErrorInfo;
-		} else {
-		    echo "Message sent!";
-		}*/
-// If the reception receipt verifying the sequence of symbols 
-		case 'testCode':
-// retrieve data from the database 
 
-// Comparison with POST parameters 
-
-// Set Session ID 
-
-// If everything is in order shipping confirmation 
-
-// If the check does not match the sequence of characters stored in the database send a message 
-
-//End section confirmation parity symbol sequences 
-		break;
-		
-		case 'getAuth':															// If authentication 
+		case 'testCode':														// If the reception receipt verifying the sequence of symbols 
+		// retrieve data from the database 
 		$SQL = 'SELECT COUNT(*) as `count_user`
 		FROM `user`
 		WHERE username=\''.$_REQUEST['username'].'\'
 		AND email=\''.$_REQUEST['email'].'\'
 		AND `password`=\''.$_REQUEST['password'].'\'';
+		$result = mysql_query($SQL);											// retrieve data from the database 
+		$res_arr = mysql_fetch_assoc($result); 
+		//echo $res_arr['count_user'].'<br>';
+		if($res_arr['count_user'] == 1){										// if this user in database
+			if(isset($_REQUEST['SESSID'])){
+				session_id($_REQUEST['SESSID']);								// Set Session ID
+				session_start();
+				if($_SESSION['CODE'] == $_REQUEST['CODE']){					// Comparison with POST parameters If everything is in order shipping confirmation
+					$send_arr['SESSID'] = session_id();							// Set Session ID
+					$send_arr['Auth'] = 'true';
+					$send_arr['Message'] = 'Authentication is successful';
+					echo json_encode($send_arr);								// shipping confirmation
+				} else {
+					$send_arr['Auth'] = 'false';
+					$send_arr['Message'] = 'No authentication';
+					echo json_encode($send_arr);
+				}
+				
+			} else {															// If the check does not match the sequence of characters stored in the database send a message 
+				$send_arr['Auth'] = 'false';
+				$send_arr['Message'] = 'No authentication';
+				echo json_encode($send_arr);
+			}
+		} else {
+			$send_arr['Auth'] = 'false';
+			$send_arr['Message'] = 'Error: DB_Error';
+			echo json_encode($send_arr);
+		}
+		mysql_close($con);
+		break;																	//End section confirmation parity symbol sequences
+		
+		case 'getAuth':															// If authentication 
+		$SQL = 'SELECT COUNT(*) as `count_user`
+		FROM `user`
+		WHERE username=\''.$_REQUEST['username'].'\'
+		
+		AND `password`=\''.$_REQUEST['password'].'\'';							// -- AND email=\''.$_REQUEST['email'].'\'
 		$result = mysql_query($SQL);											// retrieve data from the database
 		$res_arr = mysql_fetch_assoc($result);
 		if(isset($_REQUEST['SESSID'])){
@@ -172,5 +196,19 @@ $password (min (6?) charset)
 $birthday (YYYY-MM-DD)
 $gender
 */
+/*
 
+Get CODE
+Request to server:			http://winded976.ddns.net/m_app/sign.php?action=getCode&username=hoofar10&email=hpourzand@gmail.com&password=1000&gender=male&birthday=1981-10-10
+Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"true","Message":"Please input CODE (look you email)"}
+
+Test CODE
+Request to server:			http://winded976.ddns.net/m_app/sign.php?action=testCode&username=hoofar10&email=hpourzand@gmail.com&password=1000&CODE=SECRET&SESSID=f071317a46585de416ebdb96efa491df
+Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"true","Message":"Authentication is successful"}
+
+LogIn
+Request to server:			http://winded976.ddns.net/m_app/sign.php?action=getAuth&username=hoofar10&password=1000
+Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"true","count_Auth":1,"Message":"Welcome"}
+
+*/
 ?>

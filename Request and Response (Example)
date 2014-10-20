@@ -1,0 +1,11 @@
+Get CODE
+Request to server:			http://winded976.ddns.net/m_app/sign.php?action=getCode&username=hoofar10&email=hpourzand@gmail.com&password=1000&gender=male&birthday=1981-10-10
+Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"true","Message":"Please input CODE (look you email)"}
+
+Test CODE
+Request to server:			http://winded976.ddns.net/m_app/sign.php?action=testCode&username=hoofar10&email=hpourzand@gmail.com&password=1000&CODE=SECRET&SESSID=f071317a46585de416ebdb96efa491df
+Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"true","Message":"Authentication is successful"}
+
+LogIn
+Request to server:			http://winded976.ddns.net/m_app/sign.php?action=getAuth&username=hoofar10&password=1000
+Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"true","count_Auth":1,"Message":"Welcome"}
