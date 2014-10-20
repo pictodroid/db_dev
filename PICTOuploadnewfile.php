@@ -1,12 +1,6 @@
 <?php
- //$link = mysql_connect("localhost","root","");
- //mysql_select_db("PictoLike");
- //error_reporting(0);
-
- require_once('db_connect.php');
- $db = new DB_CONNECT;
- $con = $db->connect();
-
+$link = mysql_connect("localhost","root","");
+ mysql_select_db("PictoLike", $link); 
 /*
  * Following code will create a new file 
  * All files details are read from HTTP Post Request
@@ -25,7 +19,7 @@ if (isset($_POST['username']) && isset($_POST['filename']) ) {
 
  
     // mysql inserting a new row
-    $result = mysql_query($con,"INSERT INTO picto(username, filename,datecreated,locationcreated) VALUES('$username', '$filename','$datecreated','$locationcreated')");
+    $result = mysql_query("INSERT INTO picto(username, filename,datecreated,locationcreated) VALUES('$username', '$filename','$datecreated','$locationcreated')");
  
     // check if row inserted or not
     if ($result) {
@@ -35,6 +29,7 @@ if (isset($_POST['username']) && isset($_POST['filename']) ) {
  
         // echoing JSON response
         echo json_encode($response);
+		mysql_close($link);
 
     } else {
         // failed to insert row
@@ -43,6 +38,7 @@ if (isset($_POST['username']) && isset($_POST['filename']) ) {
  
         // echoing JSON response
         echo json_encode($response);
+			mysql_close($link);
 
     }
 } else {
@@ -52,7 +48,7 @@ if (isset($_POST['username']) && isset($_POST['filename']) ) {
  
     // echoing JSON response
     echo json_encode($response);
+		mysql_close($link);
 
 }
-mysql_close($con);
 ?>

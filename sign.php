@@ -33,7 +33,8 @@ if(isset($_REQUEST)){
 		WHERE username=\''.$_REQUEST['username'].'\'
 		AND email=\''.$_REQUEST['email'].'\'';
 		$result = mysql_query($SQL);											// retrieve data from the database 
-		$res_arr = mysql_fetch_assoc($result); echo $res_arr['count_user'].'<br>';
+		$res_arr = mysql_fetch_assoc($result); 
+		//echo $res_arr['count_user'].'<br>';
 		if(!$res_arr['count_user']){											// if this user is not in database
 			session_start();													// Start session
 			$username 	= $_REQUEST['username'];
@@ -43,7 +44,7 @@ if(isset($_REQUEST)){
 			$gender = 0;
 			if($_REQUEST['gender']=='male') $gender = 1;
 			$SQL = " INSERT INTO `user` (username,email,password,birthday,gender) 
-			VALUES ('$username','$email','','$birthday','$gender') ";
+			VALUES ('$username','$email','$password','$birthday','$gender') ";
 			$result = mysql_query($SQL);
 			if($result){
 				$_SESSION['CODE'] = getCode();									// Generated test sequence of characters
