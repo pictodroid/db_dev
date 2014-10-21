@@ -9,3 +9,11 @@ Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"true
 LogIn
 Request to server:			http://winded976.ddns.net/m_app/sign.php?action=getAuth&username=hoofar10&password=1000
 Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"true","count_Auth":1,"Message":"Welcome"}
+
+Forgot Password
+Request to server:			http://winded976.ddns.net/m_app/sign.php?action=forgotPass&email=hpourzand@gmail.com
+Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Message":"Temporary password sent to your email (look you email) change the temporary password after login"}
+
+Change Password
+Request to server:			http://winded976.ddns.net/m_app/sign.php?action=chPass&username=hoofar&email=hpourzand@gmail.com&password=tempPassword&pass1=123&pass2=123&SESSID=f071317a46585de416ebdb96efa491df
+Response from server:		{"SESSID":"f071317a46585de416ebdb96efa491df","Auth":"false","Message":"Change Password is successful. Relogin please."}
