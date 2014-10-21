@@ -185,8 +185,7 @@ if(isset($_REQUEST)){
 		$SQL = 'SELECT COUNT(*) as `count_user`
 		FROM `user`
 		WHERE username=\''.$_REQUEST['username'].'\'
-		
-		AND `password`=\''.$_REQUEST['password'].'\'';							// -- AND email=\''.$_REQUEST['email'].'\'
+		 AND `password`=\''.$_REQUEST['password'].'\'';							// -- AND email=\''.$_REQUEST['email'].'\'
 		$result = mysql_query($SQL);											// retrieve data from the database
 		$res_arr = mysql_fetch_assoc($result);
 		if(isset($_REQUEST['SESSID'])){
@@ -202,9 +201,11 @@ if(isset($_REQUEST)){
 		if($count_Auth <= 5){
 			if(isset($res_arr['count_user']) and $res_arr['count_user']){		// If everything is in order shipping confirmation
 				$send_arr['Auth'] = 'true';
-				$send_arr['count_Auth'] = $count_Auth;
+				$send_arr['count_Auth'] = 1;
 				$send_arr['Message'] = 'Welcome'; 
 				echo json_encode($send_arr);
+				$_SESSION['count_Auth'] = 1;
+				$count_Auth = 1;
 			} else {															// If no authentication is turn on the counter 
 				$count_Auth++;													// of unsuccessful attempts 
 				$_SESSION['count_Auth'] = $count_Auth;
