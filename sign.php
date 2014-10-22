@@ -180,6 +180,77 @@ if(isset($_REQUEST)){
 		}
 		mysql_close($con);
 		break;																	//End section confirmation parity symbol sequences
+
+		case 'loadImage':														// If the reception receipt verifying the sequence of symbols 
+		// retrieve data from the database 
+		$SQL = 'SELECT COUNT(*) as `count_user`
+		FROM `user`
+		WHERE username=\''.$_REQUEST['username'].'\'
+		AND `password`=\''.$_REQUEST['password'].'\'';
+		$result = mysql_query($SQL);											// retrieve data from the database 
+		$res_arr = mysql_fetch_assoc($result); 
+		//echo $res_arr['count_user'].'<br>';
+		if($res_arr['count_user'] == 1){										// if this user in database
+			if(isset($_REQUEST['SESSID'])){
+				session_id($_REQUEST['SESSID']);								// Set Session ID
+				session_start();
+				$image = $_REQUEST['img_base64'];
+				$SQL = "INSERT INTO `picto` (imageobj)  VALUES ('$image')";
+				$result = mysql_query($SQL);
+      			$send_arr['SESSID'] = session_id();							// Set Session ID
+      			$send_arr['ID_image'] = mysql_insert_id();
+				$send_arr['Auth'] = 'true';
+				$send_arr['Message'] = 'Authentication is successful';
+				echo json_encode($send_arr);
+			} else {															// If the check does not match the sequence of characters stored in the database send a message 
+				$send_arr['Auth'] = 'false';
+				$send_arr['Message'] = 'No authentication';
+				echo json_encode($send_arr);
+			}
+		} else {
+			$send_arr['Auth'] = 'false';
+			$send_arr['Message'] = 'Error: DB_Error';
+			echo json_encode($send_arr);
+		}
+		mysql_close($con);
+		break;																	//End section confirmation parity symbol sequences
+
+		case 'getImage':														// If the reception receipt verifying the sequence of symbols 
+		// retrieve data from the database 
+		$SQL = 'SELECT COUNT(*) as `count_user`
+		FROM `user`
+		WHERE username=\''.$_REQUEST['username'].'\'
+		AND `password`=\''.$_REQUEST['password'].'\'';
+		$result = mysql_query($SQL);											// retrieve data from the database 
+		$res_arr = mysql_fetch_assoc($result); 
+		//echo $res_arr['count_user'].'<br>';
+		if($res_arr['count_user'] == 1){										// if this user in database
+			if(isset($_REQUEST['SESSID'])){
+				session_id($_REQUEST['SESSID']);								// Set Session ID
+				session_start();
+				$id = $_REQUEST['ID_image'];
+				$SQL = "SELECT `imageobj` FROM `picto` WHERE `id`='$id'";
+				$result = mysql_query($SQL);
+				$res_arr = mysql_fetch_assoc($result);
+      			$send_arr['SESSID'] = session_id();							// Set Session ID
+      			$send_arr['image'] = $res_arr['imageobj'];
+				$send_arr['Auth'] = 'true';
+				$send_arr['Message'] = 'Authentication is successful';
+				echo json_encode($send_arr);
+				//header("Content-type: image/*");
+				//echo $result['imageobj'];
+			} else {															// If the check does not match the sequence of characters stored in the database send a message 
+				$send_arr['Auth'] = 'false';
+				$send_arr['Message'] = 'No authentication';
+				echo json_encode($send_arr);
+			}
+		} else {
+			$send_arr['Auth'] = 'false';
+			$send_arr['Message'] = 'Error: DB_Error';
+			echo json_encode($send_arr);
+		}
+		mysql_close($con);
+		break;																	//End section confirmation parity symbol sequences
 		
 		case 'getAuth':															// If authentication 
 		$SQL = 'SELECT COUNT(*) as `count_user`
